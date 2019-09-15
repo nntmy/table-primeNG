@@ -1,5 +1,16 @@
 <h3>Row Editing</h3>
 <p-table [columns]="cols" [value]="todoArray" dataKey="id" editMode="row">
+    <ng-template pTemplate="caption">
+        <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            <p-button icon="pi pi-filter" (onClick)="show =! show">
+
+              </p-button>
+
+        </div>
+
+    </ng-template>
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th *ngFor="let col of columns" [pSortableColumn]="col.field">
@@ -8,6 +19,17 @@
       </th>
       <th></th>
     </tr>
+<tr *ngIf="show">
+  <th>
+      <p-multiSelect [options]="title" [(ngModel)]="selectedCars1" [panelStyle]="{minWidth:'12em'}"></p-multiSelect>
+  </th>
+  <th>
+      <p-calendar [(ngModel)]="date" [showIcon]="true"></p-calendar>
+  </th>
+<th>
+    <p-multiSelect [options]="status" [(ngModel)]="selectedCars1" [panelStyle]="{minWidth:'12em'}"></p-multiSelect>
+</th>
+</tr>
   </ng-template>
   <ng-template
     pTemplate="body"

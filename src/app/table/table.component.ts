@@ -3,6 +3,7 @@ import { TodoServerService } from "../todo-server.service";
 import { Todo } from "../todo";
 import { SelectItem } from "primeng/api";
 import { MessageService } from "primeng/api";
+import { Subscription } from 'rxjs';
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
@@ -14,7 +15,14 @@ export class TableComponent implements OnInit {
   cols: any[];
   first: number = 0;
   status: SelectItem[];
+  title:SelectItem[];
   clonedCars: { [s: string]: Todo } = {};
+  item:string;
+  public data: Subscription;
+  selectedCars1: string[] = [];
+  date:Date;
+
+show:boolean=false;
 
   constructor(
     public todoSer: TodoServerService,
@@ -28,19 +36,31 @@ export class TableComponent implements OnInit {
       { field: "date", header: "Date" },
       { field: "status", header: "Status" },
       { field: "block", header: "Block" },
-      
+
     ];
 
     this.status = [
       { label: "Complete", value: true },
       { label: "Watting", value: false }
     ];
+
+
+  }
+
+  selct(array:Todo[]){
+
+    for( let i = 0;i <array.length;i++)
+    {this.title.push({label:'item'+i,value:i})
+    }
+    console.log('hhhhhhhhhhhhhhh',this.title);
+
+
   }
   //show value data of server
   showTodo(): void {
     this.todoSer.getTodo().subscribe(
       data => {
-        console.log(data);
+        //console.log(data);
         this.todoArray = data;
       },
       error => {

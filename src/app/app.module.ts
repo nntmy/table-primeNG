@@ -14,6 +14,9 @@ import { TableComponent } from './table/table.component';
 import {ToastModule} from 'primeng/toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import {MultiSelectModule} from 'primeng/multiselect';
+import {CalendarModule} from 'primeng/calendar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +34,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ButtonModule,
     ToastModule,
     BrowserAnimationsModule,
-    
+    MultiSelectModule,
+    CalendarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
