@@ -3,7 +3,7 @@ import { TodoServerService } from "../todo-server.service";
 import { Todo } from "../todo";
 import { SelectItem } from "primeng/api";
 import { MessageService } from "primeng/api";
-import { Subscription } from 'rxjs';
+import { Subscription } from "rxjs";
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
@@ -15,15 +15,18 @@ export class TableComponent implements OnInit {
   cols: any[];
   first: number = 0;
   status: SelectItem[];
-  title:SelectItem[];
+  title: SelectItem[];
   clonedCars: { [s: string]: Todo } = {};
-  item:string;
+  item: string;
   public data: Subscription;
-  selectedCars1: string[] = [];
-  date:Date;
+  selectedStatus: string[] = [];
+  selectedTitle: string[] = [];
+  selectedRow: Todo[];
+  test: SelectItem[];
+  date: Date;
 
-show:boolean=false;
-
+  show: boolean = false;
+  showcheck: boolean = true;
   constructor(
     public todoSer: TodoServerService,
     private messageService: MessageService
@@ -36,32 +39,50 @@ show:boolean=false;
       { field: "date", header: "Date" },
       { field: "status", header: "Status" },
       { field: "block", header: "Block" },
-
+      { field: "button", header: "" }
     ];
 
     this.status = [
       { label: "Complete", value: true },
       { label: "Watting", value: false }
     ];
-
-
   }
 
-  selct(array:Todo[]){
-
-    for( let i = 0;i <array.length;i++)
-    {this.title.push({label:'item'+i,value:i})
+  selctTitle(array: Todo[]) {
+    this.title = [];
+    for (let i = 0; i < array.length; i++) {
+      this.title.push({ label: array[i].title, value: array[i].id });
     }
-    console.log('hhhhhhhhhhhhhhh',this.title);
 
-
+    //console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
   }
+  chang(array) {
+    this.test = [];
+    for (let i = 0; i < array.length; i++) {
+      this.test.push({ label: array[i].title, value: array[i].id });
+      console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array[i].title));
+    }
+  }
+
+  // selctStatus(array: Todo[]) {
+  //   this.status = [];
+  //   for (let i = 0; i < array.length; i++) {
+  //     if (array[i].status == true) {
+  //       this.status.push({ label: "complete", value: true });
+  //     } else if (array[i].status == false) {
+  //       this.status.push({ label: "Watting", value: false });
+  //     }
+  //   }
+
+  //   console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
+  // }
   //show value data of server
   showTodo(): void {
     this.todoSer.getTodo().subscribe(
       data => {
         //console.log(data);
         this.todoArray = data;
+        this.selctTitle(this.todoArray);
       },
       error => {
         console.log(`error`);
@@ -96,5 +117,12 @@ show:boolean=false;
   onRowEditCancel(car: Todo, index: number) {
     this.todoArray[index] = this.clonedCars[car.title];
     delete this.clonedCars[car.title];
+  }
+  onRowSelect(event) {
+    this.messageService.add({
+      severity: "info",
+      summary: "Car Selected",
+      detail: "Vin: " + event.data.vin
+    });
   }
 }

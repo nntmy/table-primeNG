@@ -1,36 +1,99 @@
 <h3>Row Editing</h3>
-<p-table [columns]="cols" [value]="todoArray" dataKey="id" editMode="row">
-    <ng-template pTemplate="caption">
-        <div style="text-align: right">
-            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-            <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-            <p-button icon="pi pi-filter" (onClick)="show =! show">
-
-              </p-button>
-
-        </div>
-
-    </ng-template>
+<p-table
+  #dt
+  [columns]="cols"
+  [value]="todoArray"
+  dataKey="id"
+  editMode="row"
+  [(selection)]="selectedRow"
+>
+  <!-- ---------------Search Golbal---------------------------- -->
+  <ng-template pTemplate="caption">
+    <div>
+      <div style="text-align: left;">
+        <p-dropdown
+          [disabled]="selectedRow == null"
+          (onClick)="chang(selectedRow)"
+          [options]="test"
+          [(ngModel)]="test"
+          [style]="{ width: auto }"
+        ></p-dropdown>
+      </div>
+      <div style="text-align: right">
+        <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+        <input
+          type="text"
+          pInputText
+          size="50"
+          placeholder="Global Filter"
+          (input)="dt.filterGlobal($event.target.value, 'contains')"
+          style="width:auto; margin-right: 10px;padding:5px 0 5px 0;"
+        />
+        <p-button icon="pi pi-filter" (onClick)="show = !show"> </p-button>
+      </div>
+    </div>
+  </ng-template>
+  <!-- ------------------------hearder--------------------------------------------- -->
   <ng-template pTemplate="header" let-columns>
     <tr>
-      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-        {{ col.header }}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
+      <th style="width: 3em">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
       </th>
-      <th></th>
+      <th
+        *ngFor="let col of columns"
+        [pSortableColumn]="col.field"
+        [ngSwitch]="col.field"
+      >
+        <!-- <p-tableHeaderCheckbox *ngSwitchCase="'check'"></p-tableHeaderCheckbox> -->
+        {{ col.header }}
+        <p-sortIcon *ngSwitchCase="true" [field]="col.field"></p-sortIcon>
+      </th>
     </tr>
-<tr *ngIf="show">
-  <th>
-      <p-multiSelect [options]="title" [(ngModel)]="selectedCars1" [panelStyle]="{minWidth:'12em'}"></p-multiSelect>
-  </th>
-  <th>
-      <p-calendar [(ngModel)]="date" [showIcon]="true"></p-calendar>
-  </th>
-<th>
-    <p-multiSelect [options]="status" [(ngModel)]="selectedCars1" [panelStyle]="{minWidth:'12em'}"></p-multiSelect>
-</th>
-</tr>
+    <!-- -----------------------------dropdow,calender,search----------------------------- -->
+    <tr *ngIf="show">
+      <th></th>
+      <th *ngFor="let col of columns" [ngSwitch]="col.field">
+        <!-- <p-multiSelect
+          *ngSwitchCase="'title'"
+          [options]="title"
+          [(ngModel)]="selectedTitle"
+          [panelStyle]="{ minWidth: '12em' }"
+        ></p-multiSelect> -->
+        <input
+          *ngSwitchCase="'title'"
+          pInputText
+          type="text"
+          (input)="
+            dt.filter($event.target.value, col.field, col.filterMatchMode)
+          "
+          style="width:auto; padding:5px 0 5px 0;"
+        />
+        <p-calendar
+          *ngSwitchCase="'date'"
+          [(ngModel)]="date"
+          [showIcon]="true"
+        ></p-calendar>
+        <p-multiSelect
+          *ngSwitchCase="'status'"
+          [options]="status"
+          [(ngModel)]="selectedStatus"
+          [panelStyle]="{ minWidth: '12em' }"
+          defaultLabel="All Status"
+          (onChange)="dt.filter($event.value, col.field, 'in')"
+        ></p-multiSelect>
+        <input
+          *ngSwitchCase="'block'"
+          pInputText
+          type="text"
+          (input)="
+            dt.filter($event.target.value, col.field, col.filterMatchMode)
+          "
+          style="width:auto; padding:5px 0 5px 0;"
+        />
+      </th>
+    </tr>
   </ng-template>
+  <!-- --------------------data----------------------------- -->
   <ng-template
     pTemplate="body"
     let-rowData
@@ -38,6 +101,9 @@
     let-ri="rowIndex"
   >
     <tr [pEditableRow]="rowData">
+      <td>
+        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+      </td>
       <td>
         {{ rowData.title }}
       </td>
