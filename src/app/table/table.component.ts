@@ -2,8 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { TodoServerService } from "../todo-server.service";
 import { Todo } from "../todo";
 import { SelectItem } from "primeng/api";
+import { Message } from "primeng//api";
 import { MessageService } from "primeng/api";
-import { Subscription } from "rxjs";
+//import { DialogService } from "primeng/api";
+import { EditComponent } from "../edit/edit.component";
+import { from } from "rxjs";
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
@@ -13,23 +16,25 @@ import { Subscription } from "rxjs";
 export class TableComponent implements OnInit {
   todoArray: Todo[];
   cols: any[];
-  first: number = 0;
+  //first: number = 0;
   status: SelectItem[];
-  title: SelectItem[];
+  //title: SelectItem[];
   clonedCars: { [s: string]: Todo } = {};
   item: string;
-  public data: Subscription;
+
   selectedStatus: string[] = [];
-  selectedTitle: string[] = [];
-  selectedRow: Todo[];
-  test: SelectItem[];
+  //selectedTitle: string[] = [];
+  selectedRow: Todo[] = [];
+  //test: SelectItem[];
   date: Date;
+  selectTitle: Todo;
 
   show: boolean = false;
-  showcheck: boolean = true;
+  msgs: Message[] = [];
+  //showcheck: boolean = true;
   constructor(
     public todoSer: TodoServerService,
-    private messageService: MessageService
+    private messageService: MessageService //public dialogService: DialogService
   ) {}
 
   ngOnInit() {
@@ -48,21 +53,21 @@ export class TableComponent implements OnInit {
     ];
   }
 
-  selctTitle(array: Todo[]) {
-    this.title = [];
-    for (let i = 0; i < array.length; i++) {
-      this.title.push({ label: array[i].title, value: array[i].id });
-    }
+  // selctTitle(array: Todo[]) {
+  //   this.title = [];
+  //   for (let i = 0; i < array.length; i++) {
+  //     this.title.push({ label: array[i].title, value: array[i].id });
+  //   }
 
-    //console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
-  }
-  chang(array) {
-    this.test = [];
-    for (let i = 0; i < array.length; i++) {
-      this.test.push({ label: array[i].title, value: array[i].id });
-      console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array[i].title));
-    }
-  }
+  //   //console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
+  // }
+  // chang(array) {
+  //   this.test = [];
+  //   for (let i = 0; i < array.length; i++) {
+  //     this.test.push({ label: array[i].title, value: array[i].id });
+  //     console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array[i].title));
+  //   }
+  // }
 
   // selctStatus(array: Todo[]) {
   //   this.status = [];
@@ -82,7 +87,7 @@ export class TableComponent implements OnInit {
       data => {
         //console.log(data);
         this.todoArray = data;
-        this.selctTitle(this.todoArray);
+        //this.selctTitle(this.todoArray);
       },
       error => {
         console.log(`error`);
@@ -125,4 +130,18 @@ export class TableComponent implements OnInit {
       detail: "Vin: " + event.data.vin
     });
   }
+  showMes() {
+    this.msgs.push({
+      severity: "info",
+      summary: "Info Message",
+      detail: "PrimeNG rocks"
+    });
+  }
+  // showDialog(selectTitle: Todo) {
+  //   this.dialogService.open(EditComponent, {
+  //     header: "Choose a Car",
+  //     width: "70%",
+  //     contentStyle: { "max-height": "350px", overflow: "auto" }
+  //   });
+  // }
 }

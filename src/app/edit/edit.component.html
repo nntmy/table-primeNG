@@ -1,0 +1,22 @@
+<p-dialog
+  header="Details"
+  [(visible)]="titleDialog"
+  [responsive]="true"
+  showEffect="fade"
+  [modal]="true"
+  [style]="{ width: '225px' }"
+>
+  <div class="ui-g">
+    <div class="ui-g-4">Title:</div>
+    <div class="ui-g-8">{{ titleDialog }}</div>
+
+    <div class="ui-g-4" style="color: rosybrown">Date:</div>
+    <div class="ui-g-8">{{ dateDialog }}</div>
+
+    <div class="ui-g-4">Status:</div>
+    <div class="ui-g-8">{{ statusDialog }}</div>
+
+    <div class="ui-g-4">Block:</div>
+    <div class="ui-g-8">{{ blockDialog }}</div>
+  </div>
+</p-dialog>

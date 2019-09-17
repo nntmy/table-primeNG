@@ -1,0 +1,41 @@
+.done {
+  background-color: #EC6CD4 !important;
+  color: #000000 !important;
+}
+
+.not {
+  background-color: #46E392 !important;
+  color: #000000 !important;
+}
+
+.caption {
+  display: inline-block;
+  padding: 20px 10px 10px 10px;
+}
+
+.capDropdown {
+  width: auto;
+  height: auto;
+  top: 0;
+  position: absolute;
+  left: 0;
+  padding: 7px 0 0 5px;
+}
+
+.capFilterGold {
+  width: auto;
+  height: auto;
+  top: 0;
+  position: absolute;
+  right: 0;
+  padding: 5px 5px 0 0;
+}
+
+.active {
+  width: 225px;
+
+}
+
+.dialogHeader {
+  background-color: antiquewhite;
+}

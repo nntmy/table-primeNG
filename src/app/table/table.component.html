@@ -6,20 +6,23 @@
   dataKey="id"
   editMode="row"
   [(selection)]="selectedRow"
+  [paginator]="true"
+  [rows]="5"
 >
   <!-- ---------------Search Golbal---------------------------- -->
   <ng-template pTemplate="caption">
-    <div>
-      <div style="text-align: left;">
+    <div class="caption">
+      <div class="capDropdown">
         <p-dropdown
-          [disabled]="selectedRow == null"
-          (onClick)="chang(selectedRow)"
-          [options]="test"
-          [(ngModel)]="test"
-          [style]="{ width: auto }"
+          [disabled]="(selectedRow?.length != 0) == false"
+          [options]="selectedRow"
+          [(ngModel)]="selectTitle"
+          placeholder="Select"
+          optionLabel="title"
         ></p-dropdown>
+        <p-messages [(value)]="msgs"></p-messages>
       </div>
-      <div style="text-align: right">
+      <div class="capFilterGold">
         <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
         <input
           type="text"
@@ -42,11 +45,15 @@
       <th
         *ngFor="let col of columns"
         [pSortableColumn]="col.field"
-        [ngSwitch]="col.field"
+        [ngSwitch]="col.header"
       >
         <!-- <p-tableHeaderCheckbox *ngSwitchCase="'check'"></p-tableHeaderCheckbox> -->
         {{ col.header }}
-        <p-sortIcon *ngSwitchCase="true" [field]="col.field"></p-sortIcon>
+
+        <p-sortIcon *ngSwitchCase="'Block'" [field]="col.field"></p-sortIcon>
+        <p-sortIcon *ngSwitchCase="'Title'" [field]="col.field"></p-sortIcon>
+        <p-sortIcon *ngSwitchCase="'Date'" [field]="col.field"></p-sortIcon>
+        <p-sortIcon *ngSwitchCase="'Status'" [field]="col.field"></p-sortIcon>
       </th>
     </tr>
     <!-- -----------------------------dropdow,calender,search----------------------------- -->
@@ -70,8 +77,9 @@
         />
         <p-calendar
           *ngSwitchCase="'date'"
-          [(ngModel)]="date"
           [showIcon]="true"
+          [style]="{ width: 'auto' }"
+          [inputStyle]="{ width: '135px' }"
         ></p-calendar>
         <p-multiSelect
           *ngSwitchCase="'status'"
@@ -100,7 +108,7 @@
     let-editing="editing"
     let-ri="rowIndex"
   >
-    <tr [pEditableRow]="rowData">
+    <tr [pEditableRow]="rowData" [ngClass]="rowData.status ? 'done' : 'not'">
       <td>
         <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
       </td>
@@ -173,5 +181,60 @@
       </td>
     </tr>
   </ng-template>
+  <ng-template pTemplate="summary">
+    <ul>
+      <li *ngFor="let car of selectedRow" style="text-align: left">
+        {{ car }}
+      </li>
+    </ul>
+  </ng-template>
 </p-table>
 <p-toast></p-toast>
+<!-- -------------------------------------dialog----------------------- -->
+<p-dialog
+  header="Details"
+  [(visible)]="selectTitle"
+  [responsive]="true"
+  showEffect="fade"
+  [modal]="true"
+  [style]="{ width: '225px', 'text-align': 'center' }"
+>
+  <div class="ui-g">
+    <div
+      class="ui-g-4"
+      style="color: #ec6666;text-transform: uppercase;text-align: left"
+    >
+      Title:
+    </div>
+    <div class="ui-g-8">
+      <strong>{{ selectTitle?.title }}</strong>
+    </div>
+    <div
+      class="ui-g-4"
+      style="color: #ec6666;text-transform: uppercase;text-align: left"
+    >
+      Date:
+    </div>
+    <div class="ui-g-8">
+      <strong>{{ selectTitle?.date }}</strong>
+    </div>
+    <div
+      class="ui-g-4"
+      style="color: #ec6666;text-transform: uppercase;text-align: left"
+    >
+      Status:
+    </div>
+    <div class="ui-g-8">
+      <strong>{{ selectTitle?.status }}</strong>
+    </div>
+    <div
+      class="ui-g-4"
+      style="color: #ec6666;text-transform: uppercase;text-align: left"
+    >
+      Block:
+    </div>
+    <div class="ui-g-8">
+      <strong>{{ selectTitle?.block }}</strong>
+    </div>
+  </div>
+</p-dialog>
