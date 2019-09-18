@@ -5,8 +5,7 @@ import { SelectItem } from "primeng/api";
 import { Message } from "primeng//api";
 import { MessageService } from "primeng/api";
 //import { DialogService } from "primeng/api";
-import { EditComponent } from "../edit/edit.component";
-import { from } from "rxjs";
+
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
@@ -27,11 +26,14 @@ export class TableComponent implements OnInit {
   selectedRow: Todo[] = [];
   //test: SelectItem[];
   date: Date;
+  minDate: Date;
   selectTitle: Todo;
 
   show: boolean = false;
   msgs: Message[] = [];
   //showcheck: boolean = true;
+
+  tmp: SelectItem[];
   constructor(
     public todoSer: TodoServerService,
     private messageService: MessageService //public dialogService: DialogService
@@ -47,47 +49,57 @@ export class TableComponent implements OnInit {
       { field: "button", header: "" }
     ];
 
-    this.status = [
-      { label: "Complete", value: true },
-      { label: "Watting", value: false }
-    ];
+    // this.status = [
+    //   { label: "Complete", value: true },
+    //   { label: "Watting", value: false }
+    // ];
   }
 
   // selctTitle(array: Todo[]) {
-  //   this.title = [];
+  //   this.status = [];
   //   for (let i = 0; i < array.length; i++) {
-  //     this.title.push({ label: array[i].title, value: array[i].id });
+  //     this.status.push({ label:array[i].status, value: array[i].id });
   //   }
 
   //   //console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
   // }
-  // chang(array) {
-  //   this.test = [];
-  //   for (let i = 0; i < array.length; i++) {
-  //     this.test.push({ label: array[i].title, value: array[i].id });
-  //     console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array[i].title));
-  //   }
-  // }
 
-  // selctStatus(array: Todo[]) {
-  //   this.status = [];
-  //   for (let i = 0; i < array.length; i++) {
-  //     if (array[i].status == true) {
-  //       this.status.push({ label: "complete", value: true });
-  //     } else if (array[i].status == false) {
-  //       this.status.push({ label: "Watting", value: false });
-  //     }
-  //   }
+  selctStatus(array: Todo[]) {
+    this.status = [];
+    //kiem tra xem gia tri true da co trong mang status chua
+    let a = this.status.find(item => item.value == true);
+    //kiem tra xem gia tri false da co trong mang status chua
+    let b = this.status.find(item => item.value == false);
+    //duyet mang array
+    for (let i = 0; i < array.length; i++) {
+      //object.status = true va mang status chua co gia tri true
+      if (array[i].status == true && a == null) {
+        //push label va value vao mang
+        this.status.push({ label: "Complete", value: true });
+        //kiem tra lai xem gia tri true da co trong mang status chua
+        a = this.status.find(item => item.value == true);
+      } else if (array[i].status == false && b == null) {
+        //push label va value vao mang
+        this.status.push({ label: "Watting", value: false });
+        //kiem tra lai xem gia tri false da co trong mang status chua
+        b = this.status.find(item => item.value == false);
+      }
+    }
+    // console.log("1111111111111111111111111111111", this.tmp);
+    // let a = Array.from(new Set(this.tmp));
+    // console.log("1111111111111111111111111111111", a);
+    // this.status = a;
+    // console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(this.status.length));
+  }
 
-  //   console.log("jsonnnnnnnnnnnnnnnnnnnnn", JSON.stringify(array.length));
-  // }
   //show value data of server
   showTodo(): void {
     this.todoSer.getTodo().subscribe(
       data => {
         //console.log(data);
-        this.todoArray = data;
+        this.todoArray = data.sort((a, b) => b.id - a.id);
         //this.selctTitle(this.todoArray);
+        this.selctStatus(this.todoArray);
       },
       error => {
         console.log(`error`);
